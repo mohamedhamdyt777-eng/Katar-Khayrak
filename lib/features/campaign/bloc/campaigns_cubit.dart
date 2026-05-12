@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
-
 import 'package:injectable/injectable.dart';
 
 import '../models/campaign.dart';
@@ -65,7 +64,6 @@ class CampaignsCubit extends Cubit<CampaignsState> {
       categoryIndex: categoryIndex,
     );
 
-    // Add to the top of the list
     final updatedList = [newCampaign, ...state.campaigns];
     emit(state.copyWith(campaigns: updatedList));
   }

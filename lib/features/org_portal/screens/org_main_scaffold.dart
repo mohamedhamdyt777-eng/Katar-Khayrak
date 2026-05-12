@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -33,9 +32,7 @@ class _OrgMainScaffoldState extends State<OrgMainScaffold> {
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
         child: FloatingActionButton(
-          onPressed: () {
-            context.push('/add-campaign');
-          },
+          onPressed: () => context.push('/add-campaign'),
           backgroundColor: Theme.of(context).colorScheme.primary,
           child: Icon(Icons.add, color: Theme.of(context).colorScheme.onPrimary),
         ),

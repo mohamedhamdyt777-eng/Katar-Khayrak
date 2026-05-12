@@ -94,7 +94,7 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(width: 48), // Balance for centering title
+                    const SizedBox(width: 48),
                   ],
                 ),
                 const SizedBox(height: 24),

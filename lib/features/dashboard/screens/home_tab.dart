@@ -9,11 +9,11 @@ import '../../../core/bloc/app_cubit.dart';
 import '../../auth/bloc/auth_cubit.dart';
 import '../../auth/bloc/auth_state.dart';
 import '../../notifications/bloc/notifications_state.dart';
-import '../bloc/campaigns_cubit.dart';
-import '../bloc/campaigns_state.dart';
+import '../../campaign/bloc/campaigns_cubit.dart';
+import '../../campaign/bloc/campaigns_state.dart';
 import '../bloc/recommendations_cubit.dart';
-import '../widgets/campaign_card.dart';
-import '../models/campaign.dart';
+import '../../campaign/widgets/campaign_card.dart';
+import '../../campaign/models/campaign.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});

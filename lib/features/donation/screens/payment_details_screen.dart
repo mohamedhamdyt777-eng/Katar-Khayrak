@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../../dashboard/models/campaign.dart';
+import '../../campaign/models/campaign.dart';
 
 class PaymentDetailsScreen extends StatefulWidget {
   final Campaign campaign;

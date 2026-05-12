@@ -20,7 +20,7 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentScreenState extends State<PaymentScreen> {
   final TextEditingController _amountController = TextEditingController();
   int _selectedAmount = 0;
-  String _selectedPaymentMethod = 'instapay'; // default
+  String _selectedPaymentMethod = 'instapay';
 
   final List<int> _quickAmounts = [50, 100, 200, 500, 1000];
 
@@ -219,11 +219,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
               // Confirm Button
               ElevatedButton(
                 onPressed: _selectedAmount > 0 ? () {
-                  // Simulate payment success
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Payment Successful! Thank you.')),
                   );
-                  context.pop(); // Go back to charity directory
+                  context.pop();
                 } : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,

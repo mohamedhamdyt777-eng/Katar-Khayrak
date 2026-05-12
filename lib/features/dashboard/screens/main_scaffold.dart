@@ -6,7 +6,7 @@ import '../../../core/l10n/app_localizations.dart';
 import '../../cart/screens/cart_tab.dart';
 import '../../favorites/screens/favorites_screen.dart';
 import '../../profile/screens/profile_screen.dart';
-import '../widgets/donate_bottom_sheet.dart';
+import '../../donation/widgets/donate_bottom_sheet.dart';
 import 'home_tab.dart';
 
 class MainScaffold extends StatefulWidget {

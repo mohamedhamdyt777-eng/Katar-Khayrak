@@ -9,14 +9,12 @@ class DonateBottomSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     
-    // Using a Stack to overlap the leaf icon on top of the container
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.topCenter,
       children: [
-        // Main bottom sheet container
         Container(
-          margin: const EdgeInsets.only(top: 35), // space for floating icon
+          margin: const EdgeInsets.only(top: 35),
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
@@ -25,7 +23,6 @@ class DonateBottomSheet extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Title
               Text(
                 l10n.generalDonation,
                 style: TextStyle(
@@ -35,8 +32,6 @@ class DonateBottomSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              
-              // Subtitle
               Text(
                 l10n.tellUsDonationAmount,
                 style: TextStyle(
@@ -45,8 +40,6 @@ class DonateBottomSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
-              
-              // Amount Input Field
               TextField(
                 keyboardType: TextInputType.number,
                 style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
@@ -77,13 +70,11 @@ class DonateBottomSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 32),
-              
-              // Donate Button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.pop(context); // close sheet
+                    Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(l10n.donateNow)),
                     );
@@ -109,8 +100,6 @@ class DonateBottomSheet extends StatelessWidget {
             ],
           ),
         ),
-        
-        // Floating Leaf Icon
         Positioned(
           top: 0,
           child: Container(
@@ -120,7 +109,7 @@ class DonateBottomSheet extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: const Icon(
-              Icons.eco, // Sprout/Leaf icon
+              Icons.eco,
               color: Colors.white,
               size: 36,
             ),

@@ -39,7 +39,6 @@ class _AddCampaignBottomSheetState extends State<AddCampaignBottomSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Drag handle
           Center(
             child: Container(
               width: 40,
@@ -60,7 +59,6 @@ class _AddCampaignBottomSheetState extends State<AddCampaignBottomSheet> {
           ),
           const SizedBox(height: 24),
 
-          // Title Input
           TextField(
             controller: _titleController,
             decoration: InputDecoration(
@@ -80,7 +78,6 @@ class _AddCampaignBottomSheetState extends State<AddCampaignBottomSheet> {
           ),
           const SizedBox(height: 16),
 
-          // Date Input
           TextField(
             controller: _dateController,
             decoration: InputDecoration(
@@ -103,17 +100,14 @@ class _AddCampaignBottomSheetState extends State<AddCampaignBottomSheet> {
           ElevatedButton(
             onPressed: () {
               if (_titleController.text.isNotEmpty && _dateController.text.isNotEmpty) {
-                // Add campaign via Cubit
                 context.read<CampaignsCubit>().addCampaign(
                   _titleController.text,
                   _dateController.text,
-                  AppColors.primary.withValues(alpha: 0.2), // Default subtle color
+                  AppColors.primary.withValues(alpha: 0.2),
                 );
-                
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Campaign added successfully!')),
                 );
-                
                 context.pop();
               }
             },

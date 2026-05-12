@@ -33,7 +33,6 @@ class CampaignCard extends StatelessWidget {
           height: 200,
           child: Stack(
             children: [
-              // Background Color / Image Placeholder
               Positioned(
                 top: 0,
                 left: 0,
@@ -44,7 +43,6 @@ class CampaignCard extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(color: campaign.imageColor),
                     child: Center(
-                      // Placeholder graphic
                       child: Icon(
                         Icons.volunteer_activism,
                         size: 64,
@@ -55,16 +53,12 @@ class CampaignCard extends StatelessWidget {
                 ),
               ),
 
-              // Date Badge
               if (campaign.date.isNotEmpty)
                 Positioned(
                   top: 16,
                   left: 16,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(8),
@@ -80,7 +74,6 @@ class CampaignCard extends StatelessWidget {
                   ),
                 ),
 
-              // Bottom Content
               Positioned(
                 bottom: 0,
                 left: 0,
@@ -104,15 +97,11 @@ class CampaignCard extends StatelessWidget {
                       BlocBuilder<FavoritesCubit, List<FavoriteItem>>(
                         builder: (context, favorites) {
                           final isFavorite = favorites.any(
-                            (f) =>
-                                f.title == campaign.title &&
-                                f.date == campaign.date,
+                            (f) => f.title == campaign.title && f.date == campaign.date,
                           );
                           return IconButton(
                             icon: Icon(
-                              isFavorite
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
+                              isFavorite ? Icons.favorite : Icons.favorite_border,
                               color: AppColors.primary,
                             ),
                             onPressed: () {
@@ -128,10 +117,7 @@ class CampaignCard extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: const Icon(
-                          Icons.add_shopping_cart,
-                          color: AppColors.primary,
-                        ),
+                        icon: const Icon(Icons.add_shopping_cart, color: AppColors.primary),
                         onPressed: () {
                           final item = CartItem(
                             title: campaign.title,

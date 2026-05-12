@@ -18,7 +18,7 @@ import '../../features/auth/datasources/auth_local_datasource.dart' as _i556;
 import '../../features/auth/datasources/auth_remote_datasource.dart' as _i573;
 import '../../features/auth/repositories/auth_repository.dart' as _i1041;
 import '../../features/cart/bloc/cart_cubit.dart' as _i227;
-import '../../features/dashboard/bloc/campaigns_cubit.dart' as _i703;
+import '../../features/campaign/bloc/campaigns_cubit.dart' as _i703;
 import '../../features/dashboard/bloc/recommendations_cubit.dart' as _i528;
 import '../../features/favorites/bloc/favorites_cubit.dart' as _i797;
 import '../../features/notifications/bloc/notifications_cubit.dart' as _i772;

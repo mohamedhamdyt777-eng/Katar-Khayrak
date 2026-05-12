@@ -30,7 +30,6 @@ class OrgCampaignCard extends StatelessWidget {
           height: 200,
           child: Stack(
             children: [
-              // Background Color / Image Placeholder
               Positioned(
                 top: 0,
                 left: 0,
@@ -41,7 +40,6 @@ class OrgCampaignCard extends StatelessWidget {
                   child: Container(
                     decoration: BoxDecoration(color: campaign.imageColor),
                     child: Center(
-                      // Placeholder graphic
                       child: Icon(
                         Icons.volunteer_activism,
                         size: 64,
@@ -52,15 +50,11 @@ class OrgCampaignCard extends StatelessWidget {
                 ),
               ),
 
-              // Date Badge
               Positioned(
                 top: 16,
                 left: 16,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(8),
@@ -76,7 +70,6 @@ class OrgCampaignCard extends StatelessWidget {
                 ),
               ),
 
-              // Bottom Content
               Positioned(
                 bottom: 0,
                 left: 0,
@@ -98,19 +91,13 @@ class OrgCampaignCard extends StatelessWidget {
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(
-                          Icons.edit_outlined,
-                          color: AppColors.primary,
-                        ),
+                        icon: const Icon(Icons.edit_outlined, color: AppColors.primary),
                         onPressed: () {
                           context.push('/edit-campaign', extra: campaign);
                         },
                       ),
                       IconButton(
-                        icon: const Icon(
-                          Icons.delete_outline,
-                          color: Colors.red,
-                        ),
+                        icon: const Icon(Icons.delete_outline, color: Colors.red),
                         onPressed: () async {
                           final l10n = AppLocalizations.of(context)!;
                           final confirm = await showDialog<bool>(
@@ -120,8 +107,7 @@ class OrgCampaignCard extends StatelessWidget {
                               content: Text(l10n.confirmDelete),
                               actions: [
                                 TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(context, false),
+                                  onPressed: () => Navigator.pop(context, false),
                                   child: Text(l10n.cancel),
                                 ),
                                 TextButton(
@@ -136,9 +122,7 @@ class OrgCampaignCard extends StatelessWidget {
                           );
 
                           if (confirm == true && context.mounted) {
-                            context.read<CampaignsCubit>().removeCampaign(
-                              campaign.id,
-                            );
+                            context.read<CampaignsCubit>().removeCampaign(campaign.id);
                           }
                         },
                       ),
