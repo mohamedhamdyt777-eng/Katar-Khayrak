@@ -41,6 +41,12 @@ class NotificationsScreen extends StatelessWidget {
               style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
             ),
           ),
+          IconButton(
+            icon: const Icon(Icons.delete_sweep, color: AppColors.error),
+            onPressed: () {
+              context.read<NotificationsCubit>().deleteAllNotifications();
+            },
+          ),
         ],
       ),
       body: BlocBuilder<NotificationsCubit, NotificationsState>(
@@ -115,18 +121,30 @@ class NotificationsScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      if (!notif.isRead) ...[
-                        const SizedBox(width: 12),
-                        Container(
-                          width: 8,
-                          height: 8,
-                          margin: const EdgeInsets.only(top: 6),
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
+                      const SizedBox(width: 8),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          if (!notif.isRead)
+                            Container(
+                              width: 8,
+                              height: 8,
+                              margin: const EdgeInsets.only(top: 6, right: 12),
+                              decoration: const BoxDecoration(
+                                color: AppColors.error,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline, color: AppColors.textSecondary, size: 20),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            onPressed: () {
+                              context.read<NotificationsCubit>().deleteNotification(notif.id);
+                            },
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ],
                   ),
                 ),
