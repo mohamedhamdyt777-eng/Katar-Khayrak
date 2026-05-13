@@ -90,7 +90,10 @@ final GoRouter appRouter = GoRouter(
       path: '/payment',
       builder: (context, state) {
         final org = state.extra as Map<String, dynamic>;
-        return PaymentScreen(organization: org);
+        return BlocProvider.value(
+          value: getIt<CartCubit>(),
+          child: PaymentScreen(organization: org),
+        );
       },
     ),
     GoRoute(

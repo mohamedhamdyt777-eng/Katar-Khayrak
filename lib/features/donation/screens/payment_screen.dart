@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../cart/bloc/cart_cubit.dart';
 
 class PaymentScreen extends StatefulWidget {
   final Map<String, dynamic> organization;
@@ -219,6 +222,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               // Confirm Button
               ElevatedButton(
                 onPressed: _selectedAmount > 0 ? () {
+                  context.read<CartCubit>().clearCart();
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Payment Successful! Thank you.')),
                   );
