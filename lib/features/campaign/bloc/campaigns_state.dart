@@ -1,5 +1,7 @@
+import '../models/campaign.dart';
+
 class CampaignsState {
-  final List<dynamic> campaigns;
+  final List<Campaign> campaigns;
   final bool isLoading;
   final String? error;
 
@@ -10,14 +12,14 @@ class CampaignsState {
   });
 
   CampaignsState copyWith({
-    List<dynamic>? campaigns,
+    List<Campaign>? campaigns,
     bool? isLoading,
     String? error,
   }) {
     return CampaignsState(
       campaigns: campaigns ?? this.campaigns,
       isLoading: isLoading ?? this.isLoading,
-      error: error,
+      error: error, // null clears error intentionally
     );
   }
 }

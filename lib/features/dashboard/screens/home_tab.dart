@@ -270,10 +270,9 @@ class _HomeTabState extends State<HomeTab> {
                   ),
                 );
               }
-              final campaigns = state.campaigns.cast<Campaign>();
               final filteredCampaigns = _selectedCategoryIndex == 0
-                  ? campaigns
-                  : campaigns
+                  ? state.campaigns
+                  : state.campaigns
                       .where((c) => c.categoryIndex == _selectedCategoryIndex)
                       .toList();
 

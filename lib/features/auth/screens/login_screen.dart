@@ -21,8 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
 
   FormGroup buildForm() => fb.group({
-        'email': FormControl<String>(value: 'demo@katarkhayrak.com', validators: [Validators.required, Validators.email]),
-        'password': FormControl<String>(value: 'Password123', validators: [Validators.required]),
+        'email': FormControl<String>(validators: [Validators.required, Validators.email]),
+        'password': FormControl<String>(validators: [Validators.required]),
       });
 
   // Google SVG

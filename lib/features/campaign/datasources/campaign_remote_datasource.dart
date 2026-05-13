@@ -55,7 +55,7 @@ class CampaignRemoteDatasource {
       galleryImagePaths: galleryUrls,
     );
 
-    await docRef.set(savedCampaign.toFirestore());
+    await docRef.set(savedCampaign.toFirestoreCreate());
     return savedCampaign;
   }
 

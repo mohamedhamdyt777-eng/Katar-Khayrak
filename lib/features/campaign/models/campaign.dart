@@ -48,7 +48,8 @@ class Campaign {
     );
   }
 
-  /// Converts the Campaign to a Firestore-compatible map.
+  /// Converts the Campaign to a base Firestore map (no createdAt).
+  /// Use [toFirestoreCreate] for new documents.
   Map<String, dynamic> toFirestore() {
     return {
       'title': title,
@@ -62,6 +63,13 @@ class Campaign {
       'galleryImagePaths': galleryImagePaths,
       'categoryIndex': categoryIndex,
       'organizationId': organizationId,
+    };
+  }
+
+  /// Use this when first creating a document — adds server timestamp.
+  Map<String, dynamic> toFirestoreCreate() {
+    return {
+      ...toFirestore(),
       'createdAt': FieldValue.serverTimestamp(),
     };
   }

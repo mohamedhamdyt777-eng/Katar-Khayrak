@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -9,6 +10,7 @@ import 'campaigns_state.dart';
 @lazySingleton
 class CampaignsCubit extends Cubit<CampaignsState> {
   final CampaignRepository _repository;
+  StreamSubscription<List<Campaign>>? _subscription;
 
   CampaignsCubit(this._repository)
       : super(const CampaignsState(campaigns: [], isLoading: true));
@@ -25,9 +27,11 @@ class CampaignsCubit extends Cubit<CampaignsState> {
   }
 
   /// Subscribes to real-time Firestore updates.
+  /// Cancels any previous subscription before starting a new one.
   void watchCampaigns() {
+    _subscription?.cancel();
     emit(state.copyWith(isLoading: true, error: null));
-    _repository.watchCampaigns().listen(
+    _subscription = _repository.watchCampaigns().listen(
       (campaigns) {
         emit(state.copyWith(campaigns: campaigns, isLoading: false));
       },
@@ -63,35 +67,29 @@ class CampaignsCubit extends Cubit<CampaignsState> {
       organizationId: organizationId,
     );
 
-    try {
-      final saved = await _repository.addCampaign(newCampaign);
-      final updatedList = [saved, ...state.campaigns];
-      emit(state.copyWith(campaigns: updatedList));
-    } catch (e) {
-      emit(state.copyWith(error: e.toString()));
-    }
+    // Let the error propagate to the caller (AddCampaignScreen) for UI handling.
+    final saved = await _repository.addCampaign(newCampaign);
+    final updatedList = [saved, ...state.campaigns];
+    emit(state.copyWith(campaigns: updatedList));
   }
 
   Future<void> updateCampaign(Campaign updatedCampaign) async {
-    try {
-      await _repository.updateCampaign(updatedCampaign);
-      final updatedList = state.campaigns.map((c) {
-        return c.id == updatedCampaign.id ? updatedCampaign : c;
-      }).toList();
-      emit(state.copyWith(campaigns: updatedList));
-    } catch (e) {
-      emit(state.copyWith(error: e.toString()));
-    }
+    await _repository.updateCampaign(updatedCampaign);
+    final updatedList = state.campaigns.map((c) {
+      return c.id == updatedCampaign.id ? updatedCampaign : c;
+    }).toList();
+    emit(state.copyWith(campaigns: updatedList));
   }
 
   Future<void> removeCampaign(String id) async {
-    try {
-      await _repository.deleteCampaign(id);
-      final updatedList =
-          state.campaigns.where((c) => c.id != id).toList();
-      emit(state.copyWith(campaigns: updatedList));
-    } catch (e) {
-      emit(state.copyWith(error: e.toString()));
-    }
+    await _repository.deleteCampaign(id);
+    final updatedList = state.campaigns.where((c) => c.id != id).toList();
+    emit(state.copyWith(campaigns: updatedList));
+  }
+
+  @override
+  Future<void> close() {
+    _subscription?.cancel();
+    return super.close();
   }
 }
