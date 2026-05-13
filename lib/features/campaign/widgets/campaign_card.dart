@@ -40,16 +40,7 @@ class CampaignCard extends StatelessWidget {
                 height: 140,
                 child: Hero(
                   tag: 'campaign_image_${campaign.id}',
-                  child: Container(
-                    decoration: BoxDecoration(color: campaign.imageColor),
-                    child: Center(
-                      child: Icon(
-                        Icons.volunteer_activism,
-                        size: 64,
-                        color: AppColors.primary.withValues(alpha: 0.3),
-                      ),
-                    ),
-                  ),
+                  child: _buildCoverImage(campaign),
                 ),
               ),
 
@@ -139,6 +130,36 @@ class CampaignCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildCoverImage(Campaign campaign) {
+    final url = campaign.coverImagePath;
+    if (url != null && url.startsWith('http')) {
+      return Image.network(
+        url,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        errorBuilder: (ctx, err, stack) => _placeholder(campaign),
+        loadingBuilder: (ctx, child, progress) =>
+            progress == null ? child : _placeholder(campaign),
+      );
+    }
+    return _placeholder(campaign);
+  }
+
+  static Widget _placeholder(Campaign campaign) {
+    return Container(
+      color: campaign.imageColor,
+      child: Center(
+        child: Icon(
+          Icons.volunteer_activism,
+          size: 64,
+          color: campaign.imageColor.computeLuminance() > 0.5
+              ? Colors.black26
+              : Colors.white30,
         ),
       ),
     );

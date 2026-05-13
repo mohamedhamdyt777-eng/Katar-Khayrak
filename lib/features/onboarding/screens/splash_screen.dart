@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/l10n/app_localizations.dart';
+import '../../auth/bloc/auth_cubit.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,8 +17,19 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 5), () async {
-      if (mounted) {
+    Future.delayed(const Duration(seconds: 2), () async {
+      if (!mounted) return;
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+      if (firebaseUser != null) {
+        // Already signed in — refresh token and check auth
+        await context.read<AuthCubit>().checkAuthStatus();
+        if (mounted) {
+          // Determine if org or donor — check the email heuristic or Firestore role
+          final email = firebaseUser.email ?? '';
+          final isOrg = email.contains('org') || email.contains('misr');
+          context.go(isOrg ? '/org-dashboard' : '/dashboard');
+        }
+      } else {
         context.go('/onboarding');
       }
     });

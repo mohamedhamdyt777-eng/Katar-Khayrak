@@ -18,6 +18,7 @@ class AddCampaignScreen extends StatefulWidget {
 
 class _AddCampaignScreenState extends State<AddCampaignScreen> {
   int _selectedCategoryIndex = 0;
+  bool _isSubmitting = false;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _amountController = TextEditingController();
@@ -162,17 +163,73 @@ class _AddCampaignScreenState extends State<AddCampaignScreen> {
                 Container(height: 100, alignment: Alignment.center, decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16), border: Border.all(color: Colors.grey.shade200)), child: Text('No additional photos added', style: TextStyle(color: Colors.grey.shade500))),
               const SizedBox(height: 48),
               ElevatedButton(
-                onPressed: () {
-                  if (_titleController.text.isNotEmpty && formattedDateTime != l10n.timeNotSet) {
-                    context.read<CampaignsCubit>().addCampaign(_titleController.text, formattedDateTime, AppColors.primary.withValues(alpha: 0.2), description: _descriptionController.text, targetAmount: double.tryParse(_amountController.text), coverImagePath: _coverImage?.path, galleryImagePaths: _galleryImages.map((e) => e.path).toList(), categoryIndex: _selectedCategoryIndex);
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Campaign added successfully!')));
-                    context.pop();
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill out the title and date')));
-                  }
-                },
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, padding: const EdgeInsets.symmetric(vertical: 18), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)), elevation: 0),
-                child: Text(l10n.createCampaignBtn, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                onPressed: _isSubmitting
+                    ? null
+                    : () async {
+                        if (_titleController.text.isNotEmpty &&
+                            formattedDateTime != l10n.timeNotSet) {
+                          setState(() => _isSubmitting = true);
+                          try {
+                            await context
+                                .read<CampaignsCubit>()
+                                .addCampaign(
+                                  _titleController.text,
+                                  formattedDateTime,
+                                  AppColors.primary.withValues(alpha: 0.2),
+                                  description: _descriptionController.text,
+                                  targetAmount:
+                                      double.tryParse(_amountController.text),
+                                  coverImagePath: _coverImage?.path,
+                                  galleryImagePaths: _galleryImages
+                                      .map((e) => e.path)
+                                      .toList(),
+                                  categoryIndex: _selectedCategoryIndex,
+                                );
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'Campaign added successfully!')),
+                              );
+                              context.pop();
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content:
+                                        Text('Error: ${e.toString()}')),
+                              );
+                            }
+                          } finally {
+                            if (mounted) setState(() => _isSubmitting = false);
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'Please fill out the title and date')),
+                          );
+                        }
+                      },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                    elevation: 0),
+                child: _isSubmitting
+                    ? const SizedBox(
+                        height: 22,
+                        width: 22,
+                        child: CircularProgressIndicator(
+                            color: Colors.white, strokeWidth: 2.5),
+                      )
+                    : Text(l10n.createCampaignBtn,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white)),
               ),
               const SizedBox(height: 24),
             ],
