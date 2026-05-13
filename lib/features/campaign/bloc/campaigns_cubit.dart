@@ -48,7 +48,6 @@ class CampaignsCubit extends Cubit<CampaignsState> {
       location: 'Fayoum, Egypt',
       categoryIndex: 1, // Most Needed
       targetAmount: 50000,
-      raisedAmount: 12000,
       description:
           'Access to clean drinking water is a fundamental human right. We are building 10 new water wells in remote villages in Fayoum to provide safe water for hundreds of families. This is currently our most urgent and needed campaign.',
     ),
@@ -60,7 +59,6 @@ class CampaignsCubit extends Cubit<CampaignsState> {
       location: 'Nationwide',
       categoryIndex: 2, // Most Donated
       targetAmount: 100000,
-      raisedAmount: 85000,
       description:
           'Our annual Ramadan Food Basket drive is our most popular community initiative. Each basket contains enough essential food items (rice, oil, lentils, dates) to sustain a family of 5 for an entire month.',
     ),
@@ -72,7 +70,6 @@ class CampaignsCubit extends Cubit<CampaignsState> {
       location: 'Giza, Egypt',
       categoryIndex: 5, // Orphans
       targetAmount: 30000,
-      raisedAmount: 5000,
       description:
           'Make a lasting impact by sponsoring a child. Your monthly or one-time donation covers living expenses, clothing, and access to extracurricular activities for orphans in our care facilities.',
     ),
