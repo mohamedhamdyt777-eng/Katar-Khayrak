@@ -48,4 +48,16 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   void deleteAllNotifications() {
     emit(state.copyWith(notifications: []));
   }
+
+  void addNotification({required String title, required String body}) {
+    final newNotif = AppNotification(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      title: title,
+      body: body,
+      timestamp: DateTime.now(),
+      isRead: false,
+    );
+    final updatedList = [newNotif, ...state.notifications];
+    emit(state.copyWith(notifications: updatedList));
+  }
 }

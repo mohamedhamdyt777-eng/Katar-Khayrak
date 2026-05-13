@@ -7,6 +7,7 @@ import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../cart/bloc/cart_cubit.dart';
+import '../../notifications/bloc/notifications_cubit.dart';
 
 class PaymentScreen extends StatefulWidget {
   final Map<String, dynamic> organization;
@@ -223,6 +224,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ElevatedButton(
                 onPressed: _selectedAmount > 0 ? () {
                   context.read<CartCubit>().clearCart();
+                  context.read<NotificationsCubit>().addNotification(
+                    title: 'Payment Successful',
+                    body: 'Thank you for your generous donation of $_selectedAmount EGP to $orgName. Your support makes a difference!',
+                  );
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Payment Successful! Thank you.')),
                   );
