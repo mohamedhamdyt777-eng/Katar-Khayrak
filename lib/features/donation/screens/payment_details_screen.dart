@@ -5,6 +5,8 @@ import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../campaign/models/campaign.dart';
+import '../../notifications/bloc/notifications_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PaymentDetailsScreen extends StatefulWidget {
   final Campaign campaign;
@@ -219,6 +221,16 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
               // Confirm Button
               ElevatedButton(
                 onPressed: _selectedAmount > 0 ? () {
+                  // Send Notification
+                  final methodName = _selectedPaymentMethod == 'instapay' 
+                      ? l10n.instapay 
+                      : (_selectedPaymentMethod == 'card' ? l10n.creditCard : l10n.mobileWallet);
+                  
+                  context.read<NotificationsCubit>().addNotification(
+                    title: 'Payment Successful',
+                    body: 'Thank you for your donation of $_selectedAmount ${l10n.currencyEGP} to $campaignName via $methodName.',
+                  );
+
                   // Simulate payment success
                   showDialog(
                     context: context,

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../cart/bloc/cart_cubit.dart';
+import '../../cart/models/cart_item.dart';
+import '../../notifications/bloc/notifications_cubit.dart';
 
 class PaymentScreen extends StatefulWidget {
   final Map<String, dynamic> organization;
@@ -219,6 +223,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
               // Confirm Button
               ElevatedButton(
                 onPressed: _selectedAmount > 0 ? () {
+                  // Remove from cart if this payment was for a cart item
+                  final cartItem = widget.organization['cartItem'];
+                  if (cartItem != null && cartItem is CartItem) {
+                    context.read<CartCubit>().removeItem(cartItem);
+                  }
+                  
+                  // Send Notification
+                  final methodName = _selectedPaymentMethod == 'instapay' 
+                      ? l10n.instapay 
+                      : (_selectedPaymentMethod == 'card' ? l10n.creditCard : l10n.mobileWallet);
+                  
+                  context.read<NotificationsCubit>().addNotification(
+                    title: 'Payment Successful',
+                    body: 'Thank you for your donation of $_selectedAmount ${l10n.currencyEGP} to $orgName via $methodName.',
+                  );
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Payment Successful! Thank you.')),
                   );

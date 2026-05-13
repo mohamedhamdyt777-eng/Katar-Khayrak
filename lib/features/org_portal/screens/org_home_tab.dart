@@ -20,6 +20,14 @@ class OrgHomeTab extends StatefulWidget {
 class _OrgHomeTabState extends State<OrgHomeTab> {
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CampaignsCubit>().watchCampaigns();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final user = context.select((AuthCubit cubit) =>
@@ -100,6 +108,21 @@ class _OrgHomeTabState extends State<OrgHomeTab> {
             // Campaigns List
             BlocBuilder<CampaignsCubit, CampaignsState>(
               builder: (context, state) {
+                if (state.isLoading) {
+                  return const Padding(
+                    padding: EdgeInsets.all(48.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+                if (state.error != null) {
+                  return Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Center(
+                      child: Text('Error: ${state.error}',
+                          style: const TextStyle(color: Colors.red)),
+                    ),
+                  );
+                }
                 if (state.campaigns.isEmpty) {
                   return Center(
                     child: Padding(

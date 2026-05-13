@@ -10,8 +10,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/bloc/app_cubit.dart';
 import 'core/bloc/app_state.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   configureDependencies();
   runApp(
     BlocProvider(

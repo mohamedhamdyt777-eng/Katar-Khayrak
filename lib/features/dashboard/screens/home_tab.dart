@@ -29,6 +29,7 @@ class _HomeTabState extends State<HomeTab> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CampaignsCubit>().watchCampaigns();
       context.read<RecommendationsCubit>().loadRecommendations();
     });
   }
@@ -254,9 +255,27 @@ class _HomeTabState extends State<HomeTab> {
           // Campaigns List
           BlocBuilder<CampaignsCubit, CampaignsState>(
             builder: (context, state) {
-              final filteredCampaigns = _selectedCategoryIndex == 0 
-                  ? state.campaigns 
-                  : state.campaigns.where((c) => c.categoryIndex == _selectedCategoryIndex).toList();
+              if (state.isLoading) {
+                return const Padding(
+                  padding: EdgeInsets.all(48.0),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+              if (state.error != null) {
+                return Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Center(
+                    child: Text('Error: ${state.error}',
+                        style: const TextStyle(color: Colors.red)),
+                  ),
+                );
+              }
+              final campaigns = state.campaigns.cast<Campaign>();
+              final filteredCampaigns = _selectedCategoryIndex == 0
+                  ? campaigns
+                  : campaigns
+                      .where((c) => c.categoryIndex == _selectedCategoryIndex)
+                      .toList();
 
               if (filteredCampaigns.isEmpty) {
                 return Center(
@@ -273,14 +292,14 @@ class _HomeTabState extends State<HomeTab> {
               return ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                 itemCount: filteredCampaigns.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 16),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 16),
                 itemBuilder: (context, index) {
                   final campaign = filteredCampaigns[index];
-                  return CampaignCard(
-                    campaign: campaign,
-                  );
+                  return CampaignCard(campaign: campaign);
                 },
               );
             },

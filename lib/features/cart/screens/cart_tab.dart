@@ -118,6 +118,7 @@ class CartTab extends StatelessWidget {
                       'name': item.title,
                       'icon': Icons.volunteer_activism,
                       'color': item.imageColor,
+                      'cartItem': item,
                     });
                   },
                   contentPadding: const EdgeInsets.all(12),
