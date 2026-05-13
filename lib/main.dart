@@ -12,12 +12,14 @@ import 'core/bloc/app_state.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'core/services/firestore_seeder.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirestoreSeeder.seedCampaignsIfEmpty();
   configureDependencies();
   runApp(
     BlocProvider(
