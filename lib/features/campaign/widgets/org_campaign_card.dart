@@ -37,16 +37,7 @@ class OrgCampaignCard extends StatelessWidget {
                 height: 140,
                 child: Hero(
                   tag: 'campaign_image_${campaign.id}',
-                  child: Container(
-                    decoration: BoxDecoration(color: campaign.imageColor),
-                    child: Center(
-                      child: Icon(
-                        Icons.volunteer_activism,
-                        size: 64,
-                        color: AppColors.primary.withValues(alpha: 0.3),
-                      ),
-                    ),
-                  ),
+                  child: _buildCoverImage(campaign),
                 ),
               ),
 
@@ -122,7 +113,19 @@ class OrgCampaignCard extends StatelessWidget {
                           );
 
                           if (confirm == true && context.mounted) {
-                            context.read<CampaignsCubit>().removeCampaign(campaign.id);
+                            try {
+                              await context
+                                  .read<CampaignsCubit>()
+                                  .removeCampaign(campaign.id);
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                          Text('Error: ${e.toString()}')),
+                                );
+                              }
+                            }
                           }
                         },
                       ),
@@ -132,6 +135,36 @@ class OrgCampaignCard extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildCoverImage(Campaign campaign) {
+    final url = campaign.coverImagePath;
+    if (url != null && url.startsWith('http')) {
+      return Image.network(
+        url,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        errorBuilder: (ctx, err, stack) => _placeholder(campaign),
+        loadingBuilder: (ctx, child, progress) =>
+            progress == null ? child : _placeholder(campaign),
+      );
+    }
+    return _placeholder(campaign);
+  }
+
+  static Widget _placeholder(Campaign campaign) {
+    return Container(
+      color: campaign.imageColor,
+      child: Center(
+        child: Icon(
+          Icons.volunteer_activism,
+          size: 64,
+          color: campaign.imageColor.computeLuminance() > 0.5
+              ? Colors.black26
+              : Colors.white30,
         ),
       ),
     );

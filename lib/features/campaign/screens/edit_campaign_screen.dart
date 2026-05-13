@@ -22,6 +22,7 @@ class EditCampaignScreen extends StatefulWidget {
 
 class _EditCampaignScreenState extends State<EditCampaignScreen> {
   int _selectedCategoryIndex = 0;
+  bool _isSubmitting = false;
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _amountController = TextEditingController();
@@ -106,7 +107,9 @@ class _EditCampaignScreenState extends State<EditCampaignScreen> {
   }
 
   ImageProvider _getImageProvider(String path) {
-    if (path.startsWith('assets/')) {
+    if (path.startsWith('http')) {
+      return NetworkImage(path);
+    } else if (path.startsWith('assets/')) {
       return AssetImage(path);
     } else {
       return FileImage(File(path));
@@ -493,50 +496,62 @@ class _EditCampaignScreenState extends State<EditCampaignScreen> {
 
               // Update Button
               ElevatedButton(
-                onPressed: () {
-                  if (_titleController.text.isNotEmpty && formattedDateTime.isNotEmpty) {
-                    final targetAmt = double.tryParse(_amountController.text);
-                    
-                    // Construct final gallery image list
-                    List<String> finalGalleryImages = [
-                      ..._existingGalleryImages,
-                      ..._newGalleryImages.map((e) => e.path)
-                    ];
-
-                    final updatedCampaign = Campaign(
-                      id: widget.campaign.id,
-                      title: _titleController.text,
-                      date: formattedDateTime,
-                      imageColor: widget.campaign.imageColor,
-                      description: _descriptionController.text,
-                      targetAmount: targetAmt,
-                      coverImagePath: _newCoverImage?.path ?? _existingCoverImagePath,
-                      galleryImagePaths: finalGalleryImages,
-                      categoryIndex: _selectedCategoryIndex,
-                    );
-                    
-                    context.read<CampaignsCubit>().updateCampaign(updatedCampaign);
-                    
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Campaign updated successfully!')),
-                    );
-                    
-                    // We need to pop back. Wait, the details screen doesn't automatically
-                    // reload if it was passed the campaign object via route extra.
-                    // But if it rebuilds from a Cubit, it would. 
-                    // To be safe, we just pop back. The details screen might still show old data 
-                    // if it is holding `widget.campaign` statelessly. We can fix that later if requested.
-                    context.pop();
-                    
-                    // Actually we should pop twice and go to home? No, details screen is fine, it usually
-                    // gets popped to and user can navigate back to home to see changes if details doesn't update.
-                    // Currently, the Details Screen expects the campaign as an extra.
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please fill out the title and date')),
-                    );
-                  }
-                },
+                onPressed: _isSubmitting
+                    ? null
+                    : () async {
+                        if (_titleController.text.isNotEmpty &&
+                            formattedDateTime.isNotEmpty) {
+                          setState(() => _isSubmitting = true);
+                          try {
+                            final targetAmt =
+                                double.tryParse(_amountController.text);
+                            final finalGalleryImages = [
+                              ..._existingGalleryImages,
+                              ..._newGalleryImages.map((e) => e.path),
+                            ];
+                            final updatedCampaign = Campaign(
+                              id: widget.campaign.id,
+                              title: _titleController.text,
+                              date: formattedDateTime,
+                              imageColor: widget.campaign.imageColor,
+                              description: _descriptionController.text,
+                              targetAmount: targetAmt,
+                              coverImagePath:
+                                  _newCoverImage?.path ?? _existingCoverImagePath,
+                              galleryImagePaths: finalGalleryImages,
+                              categoryIndex: _selectedCategoryIndex,
+                              organizationId: widget.campaign.organizationId,
+                            );
+                            await context
+                                .read<CampaignsCubit>()
+                                .updateCampaign(updatedCampaign);
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content:
+                                        Text('Campaign updated successfully!')),
+                              );
+                              context.pop();
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content:
+                                        Text('Error: ${e.toString()}')),
+                              );
+                            }
+                          } finally {
+                            if (mounted) setState(() => _isSubmitting = false);
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text(
+                                    'Please fill out the title and date')),
+                          );
+                        }
+                      },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   padding: const EdgeInsets.symmetric(vertical: 18),
@@ -545,14 +560,21 @@ class _EditCampaignScreenState extends State<EditCampaignScreen> {
                   ),
                   elevation: 0,
                 ),
-                child: Text(
-                  l10n.updateCampaignBtn,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
+                child: _isSubmitting
+                    ? const SizedBox(
+                        height: 22,
+                        width: 22,
+                        child: CircularProgressIndicator(
+                            color: Colors.white, strokeWidth: 2.5),
+                      )
+                    : Text(
+                        l10n.updateCampaignBtn,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
               ),
               const SizedBox(height: 24),
             ],
