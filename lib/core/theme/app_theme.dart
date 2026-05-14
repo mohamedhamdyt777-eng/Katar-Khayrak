@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'app_colors.dart';
 
 class AppTheme {
@@ -14,7 +15,7 @@ class AppTheme {
     ),
     scaffoldBackgroundColor: AppColors.bgLight,
     cardColor: AppColors.cardLight,
-    fontFamily: 'Cairo',
+    fontFamily: GoogleFonts.readexPro().fontFamily,
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.primary,
       foregroundColor: AppColors.textOnDark,
@@ -41,7 +42,7 @@ class AppTheme {
     ),
     scaffoldBackgroundColor: AppColors.bgDark,
     cardColor: AppColors.cardDark,
-    fontFamily: 'Cairo',
+    fontFamily: GoogleFonts.readexPro().fontFamily,
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.primaryDark,
       foregroundColor: AppColors.textOnDark,

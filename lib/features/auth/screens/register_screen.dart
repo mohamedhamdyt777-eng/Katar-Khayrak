@@ -9,6 +9,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/theme/app_input_styles.dart';
 import '../../../core/widgets/custom_primary_button.dart';
+import '../../../core/widgets/loading_overlay.dart';
 import '../../../core/utils/app_snackbars.dart';
 import '../bloc/auth_cubit.dart';
 import '../bloc/auth_state.dart';
@@ -69,199 +70,228 @@ class _RegisterScreenState extends State<RegisterScreen> {
             );
           },
           builder: (context, state) {
-            return ReactiveFormBuilder(
-              form: buildForm,
-              builder: (context, form, child) {
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24.0,
-                    vertical: 32.0,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SizedBox(height: 20),
-                      // Logo
-                      Center(
-                        child: Text(
-                          l10n.appName.toUpperCase(),
-                          style: AppTextStyles.headlineLarge.copyWith(
-                            color: Theme.of(context).colorScheme.primary,
-                            letterSpacing: 1.5,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 50),
-                      // Heading
-                      Text(
-                        l10n.createYourAccount,
-                        style: AppTextStyles.headlineMedium.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-
-                      // Name Field
-                      ReactiveTextField(
-                        formControlName: 'name',
-                        decoration: AppInputStyles.defaultDecoration(
-                          context: context,
-                          hint: l10n.enterYourName,
-                          prefixIcon: widget.isOrg ? Icons.business : Icons.person_outline,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Email Field
-                      ReactiveTextField(
-                        formControlName: 'email',
-                        decoration: AppInputStyles.defaultDecoration(
-                          context: context,
-                          hint: l10n.enterYourEmail,
-                          prefixIcon: Icons.mail_outline,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Password Field
-                      ReactiveTextField(
-                        formControlName: 'password',
-                        obscureText: _obscurePassword,
-                        decoration: AppInputStyles.defaultDecoration(
-                          context: context,
-                          hint: l10n.enterYourPassword,
-                          prefixIcon: Icons.lock_outline,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              color: Colors.grey.shade400,
-                            ),
-                            onPressed: () => setState(
-                              () => _obscurePassword = !_obscurePassword,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // Confirm Password Field
-                      ReactiveTextField(
-                        formControlName: 'confirmPassword',
-                        obscureText: _obscureConfirmPassword,
-                        decoration: AppInputStyles.defaultDecoration(
-                          context: context,
-                          hint: l10n.confirmYourPassword,
-                          prefixIcon: Icons.lock_outline,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscureConfirmPassword
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              color: Colors.grey.shade400,
-                            ),
-                            onPressed: () => setState(
-                              () => _obscureConfirmPassword =
-                                  !_obscureConfirmPassword,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-
-                      // Register Button
-                      CustomPrimaryButton(
-                        text: l10n.signup,
-                        onPressed: form.valid
-                            ? () {
-                                context.read<AuthCubit>().register(
-                                  form.control('name').value,
-                                  form.control('email').value,
-                                  form.control('password').value,
-                                );
-                              }
-                            : null,
-                        isLoading: state.maybeWhen(loading: () => true, orElse: () => false),
-                      ),
-                      const SizedBox(height: 24),
-
-                      // Login Text
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            l10n.alreadyHaveAccount,
-                            style: TextStyle(color: Colors.grey.shade600),
-                          ),
-                          GestureDetector(
-                            onTap: () => context.pop(),
-                            child: Text(
-                              l10n.loginTitle,
-                              style: const TextStyle(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
+            return LoadingOverlay(
+              isLoading: state.maybeWhen(loading: () => true, orElse: () => false),
+              message: 'Loading...',
+              child: ReactiveFormBuilder(
+                form: buildForm,
+                builder: (context, form, child) {
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 32.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 20),
+                        // Back Button & Logo
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).cardColor,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: Colors.grey.shade200),
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.arrow_back_ios_new, size: 18),
+                                  onPressed: () {
+                                    if (context.canPop()) {
+                                      context.pop();
+                                    } else {
+                                      context.go('/user-type');
+                                    }
+                                  },
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 30),
-
-                      // Or Divider
-                      Row(
-                        children: [
-                          Expanded(child: Divider(color: Colors.grey.shade300)),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Text(
-                              l10n.orText,
-                              style: const TextStyle(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.w600,
+                            Center(
+                              child: Text(
+                                l10n.appName.toUpperCase(),
+                                style: AppTextStyles.headlineLarge.copyWith(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  letterSpacing: 1.5,
+                                  fontWeight: FontWeight.w900,
+                                ),
                               ),
                             ),
-                          ),
-                          Expanded(child: Divider(color: Colors.grey.shade300)),
-                        ],
-                      ),
-                      const SizedBox(height: 30),
-
-                      // Google Sign Up Button
-                      OutlinedButton.icon(
-                        onPressed: () {
-                          AppSnackBars.show(context, 'Google Sign up clicked');
-                        },
-                        icon: SvgPicture.string(
-                          _googleSvg,
-                          width: 24,
-                          height: 24,
+                          ],
                         ),
-                        label: Text(
-                          l10n.signUpWithGoogle,
-                          style: TextStyle(
+                        const SizedBox(height: 50),
+                        // Heading
+                        Text(
+                          l10n.createYourAccount,
+                          style: AppTextStyles.headlineMedium.copyWith(
                             color: Theme.of(context).colorScheme.onSurface,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: Theme.of(context).cardColor,
-                          side: BorderSide(color: Colors.grey.shade200),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                        const SizedBox(height: 30),
+  
+                        // Name Field
+                        ReactiveTextField(
+                          formControlName: 'name',
+                          decoration: AppInputStyles.defaultDecoration(
+                            context: context,
+                            hint: l10n.enterYourName,
+                            prefixIcon: widget.isOrg ? Icons.business : Icons.person_outline,
                           ),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          elevation: 0,
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              },
+                        const SizedBox(height: 16),
+  
+                        // Email Field
+                        ReactiveTextField(
+                          formControlName: 'email',
+                          decoration: AppInputStyles.defaultDecoration(
+                            context: context,
+                            hint: l10n.enterYourEmail,
+                            prefixIcon: Icons.mail_outline,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+  
+                        // Password Field
+                        ReactiveTextField(
+                          formControlName: 'password',
+                          obscureText: _obscurePassword,
+                          decoration: AppInputStyles.defaultDecoration(
+                            context: context,
+                            hint: l10n.enterYourPassword,
+                            prefixIcon: Icons.lock_outline,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscurePassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
+                                color: Colors.grey.shade400,
+                              ),
+                              onPressed: () => setState(
+                                () => _obscurePassword = !_obscurePassword,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+  
+                        // Confirm Password Field
+                        ReactiveTextField(
+                          formControlName: 'confirmPassword',
+                          obscureText: _obscureConfirmPassword,
+                          decoration: AppInputStyles.defaultDecoration(
+                            context: context,
+                            hint: l10n.confirmYourPassword,
+                            prefixIcon: Icons.lock_outline,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscureConfirmPassword
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
+                                color: Colors.grey.shade400,
+                              ),
+                              onPressed: () => setState(
+                                () => _obscureConfirmPassword =
+                                    !_obscureConfirmPassword,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+  
+                        // Register Button
+                        CustomPrimaryButton(
+                          text: l10n.signup,
+                          onPressed: form.valid
+                              ? () {
+                                  context.read<AuthCubit>().register(
+                                    form.control('name').value,
+                                    form.control('email').value,
+                                    form.control('password').value,
+                                  );
+                                }
+                              : null,
+                          isLoading: state.maybeWhen(loading: () => true, orElse: () => false),
+                        ),
+                        const SizedBox(height: 24),
+  
+                        // Login Text
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              l10n.alreadyHaveAccount,
+                              style: TextStyle(color: Colors.grey.shade600),
+                            ),
+                            GestureDetector(
+                              onTap: () => context.pop(),
+                              child: Text(
+                                l10n.loginTitle,
+                                style: const TextStyle(
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 30),
+  
+                        // Or Divider
+                        Row(
+                          children: [
+                            Expanded(child: Divider(color: Colors.grey.shade300)),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                l10n.orText,
+                                style: const TextStyle(
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            Expanded(child: Divider(color: Colors.grey.shade300)),
+                          ],
+                        ),
+                        const SizedBox(height: 30),
+  
+                        // Google Sign Up Button
+                        OutlinedButton.icon(
+                          onPressed: () {
+                            AppSnackBars.show(context, 'Google Sign up clicked');
+                          },
+                          icon: SvgPicture.string(
+                            _googleSvg,
+                            width: 24,
+                            height: 24,
+                          ),
+                          label: Text(
+                            l10n.signUpWithGoogle,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: Theme.of(context).cardColor,
+                            side: BorderSide(color: Colors.grey.shade200),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            elevation: 0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
             );
           },
         ),
