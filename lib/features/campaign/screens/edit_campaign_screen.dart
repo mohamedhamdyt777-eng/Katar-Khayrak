@@ -8,6 +8,8 @@ import 'package:intl/intl.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/custom_primary_button.dart';
+import '../../../core/utils/app_snackbars.dart';
 import '../bloc/campaigns_cubit.dart';
 import '../models/campaign.dart';
 
@@ -495,7 +497,8 @@ class _EditCampaignScreenState extends State<EditCampaignScreen> {
               const SizedBox(height: 48),
 
               // Update Button
-              ElevatedButton(
+              CustomPrimaryButton(
+                text: l10n.updateCampaignBtn,
                 onPressed: () {
                   if (_titleController.text.isNotEmpty && formattedDateTime.isNotEmpty) {
                     final targetAmt = double.tryParse(_amountController.text);
@@ -519,58 +522,12 @@ class _EditCampaignScreenState extends State<EditCampaignScreen> {
                     );
                     
                     context.read<CampaignsCubit>().updateCampaign(updatedCampaign);
-                    
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Row(
-                          children: [
-                            Icon(Icons.check_circle, color: Colors.white),
-                            SizedBox(width: 12),
-                            Text(
-                              'Campaign updated successfully!',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        backgroundColor: AppColors.primary,
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        duration: const Duration(seconds: 3),
-                      ),
-                    );
-                    
-                    // We need to pop back. Wait, the details screen doesn't automatically
-                    // reload if it was passed the campaign object via route extra.
-                    // But if it rebuilds from a Cubit, it would. 
-                    // To be safe, we just pop back. The details screen might still show old data 
-                    // if it is holding `widget.campaign` statelessly. We can fix that later if requested.
+                    AppSnackBars.showSuccess(context, 'Campaign updated successfully!');
                     context.pop();
-                    
-                    // Actually we should pop twice and go to home? No, details screen is fine, it usually
-                    // gets popped to and user can navigate back to home to see changes if details doesn't update.
-                    // Currently, the Details Screen expects the campaign as an extra.
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please fill out the title and date')),
-                    );
+                    AppSnackBars.showError(context, 'Please fill out the title and date');
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  l10n.updateCampaignBtn,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
               ),
               const SizedBox(height: 24),
             ],

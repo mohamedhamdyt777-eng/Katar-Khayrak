@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/app_snackbars.dart';
 import '../../cart/bloc/cart_cubit.dart';
 import '../../cart/models/cart_item.dart';
 import '../../favorites/bloc/favorites_cubit.dart';
@@ -167,24 +168,7 @@ class CampaignCard extends StatelessWidget {
 
                           final l10n = AppLocalizations.of(context);
                           if (l10n != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Row(
-                                  children: [
-                                    const Icon(Icons.check_circle, color: Colors.white),
-                                    const SizedBox(width: 12),
-                                    Text(
-                                      l10n.addedToCartMsg,
-                                      style: const TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                                backgroundColor: AppColors.primary,
-                                behavior: SnackBarBehavior.floating,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                duration: const Duration(seconds: 2),
-                              ),
-                            );
+                            AppSnackBars.showSuccess(context, l10n.addedToCartMsg);
                           }
                         },
                       ),

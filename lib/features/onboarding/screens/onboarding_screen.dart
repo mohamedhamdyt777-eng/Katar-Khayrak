@@ -6,6 +6,7 @@ import '../../../core/bloc/app_cubit.dart';
 import '../../../core/bloc/app_state.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/custom_primary_button.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});
@@ -150,28 +151,13 @@ class OnboardingScreen extends StatelessWidget {
               const SizedBox(height: 40),
               
               // Let's Start Button
-              ElevatedButton(
+              CustomPrimaryButton(
+                text: l10n.letsStart,
                 onPressed: () async {
                   if (context.mounted) {
                     context.push('/intro');
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  l10n.letsStart,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
               ),
             ],
           ),

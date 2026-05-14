@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/custom_primary_button.dart';
+import '../../../core/utils/app_snackbars.dart';
 import '../../cart/bloc/cart_cubit.dart';
 import '../../cart/models/cart_item.dart';
 import '../../notifications/bloc/notifications_cubit.dart';
@@ -232,8 +234,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
               
               const SizedBox(height: 40),
               
-              // Confirm Button
-              ElevatedButton(
+              CustomPrimaryButton(
+                text: '${l10n.confirmDonation} - ${_selectedAmount > 0 ? _selectedAmount : 0} ${l10n.currencyEGP}',
                 onPressed: _selectedAmount > 0 ? () {
                   context.read<CartCubit>().removeItem(
                     CartItem(title: orgName, imageColor: orgColor),
@@ -242,43 +244,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     title: 'Payment Successful',
                     body: 'Thank you for your generous donation of $_selectedAmount EGP to $orgName. Your support makes a difference!',
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Row(
-                        children: [
-                          Icon(Icons.check_circle, color: Colors.white),
-                          SizedBox(width: 12),
-                          Text(
-                            'Payment Successful! Thank you.',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      backgroundColor: AppColors.primary,
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      duration: const Duration(seconds: 3),
-                    ),
-                  );
+                  AppSnackBars.showSuccess(context, 'Payment Successful! Thank you.');
                   context.pop();
                 } : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  disabledBackgroundColor: Colors.grey.shade300,
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  '${l10n.confirmDonation} - ${_selectedAmount > 0 ? _selectedAmount : 0} ${l10n.currencyEGP}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
               ),
               const SizedBox(height: 20),
             ],

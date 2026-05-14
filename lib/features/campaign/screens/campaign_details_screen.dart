@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/custom_primary_button.dart';
+import '../../../core/utils/app_snackbars.dart';
 import '../../cart/bloc/cart_cubit.dart';
 import '../../cart/models/cart_item.dart';
 import '../../favorites/bloc/favorites_cubit.dart';
@@ -277,24 +279,7 @@ class CampaignDetailsScreen extends StatelessWidget {
                         onPressed: () {
                           final item = CartItem(title: campaign.title, imageColor: campaign.imageColor);
                           context.read<CartCubit>().addItem(item);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Row(
-                                children: [
-                                  const Icon(Icons.check_circle, color: Colors.white),
-                                  const SizedBox(width: 12),
-                                  Text(
-                                    l10n.addedToCartMsg,
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              backgroundColor: AppColors.primary,
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              duration: const Duration(seconds: 2),
-                            ),
-                          );
+                          AppSnackBars.showSuccess(context, l10n.addedToCartMsg);
                         },
                         style: OutlinedButton.styleFrom(
                           side: const BorderSide(color: AppColors.primary),
@@ -307,18 +292,9 @@ class CampaignDetailsScreen extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       flex: 2,
-                      child: ElevatedButton(
+                      child: CustomPrimaryButton(
+                        text: 'Donate Now',
                         onPressed: () => context.push('/payment-details', extra: campaign),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                          elevation: 0,
-                        ),
-                        child: const Text(
-                          'Donate Now',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                        ),
                       ),
                     ),
                   ],

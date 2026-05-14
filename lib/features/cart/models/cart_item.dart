@@ -12,7 +12,7 @@ class CartItem {
   Map<String, dynamic> toJson() {
     return {
       'title': title,
-      'imageColor': imageColor.toARGB32(),
+      'imageColor': imageColor.value,
     };
   }
 
@@ -29,8 +29,8 @@ class CartItem {
       other is CartItem &&
           runtimeType == other.runtimeType &&
           title == other.title &&
-          imageColor.toARGB32() == other.imageColor.toARGB32();
+          imageColor.value == other.imageColor.value;
 
   @override
-  int get hashCode => title.hashCode ^ imageColor.toARGB32().hashCode;
+  int get hashCode => title.hashCode ^ imageColor.value.hashCode;
 }

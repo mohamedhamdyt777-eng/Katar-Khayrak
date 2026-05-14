@@ -6,6 +6,8 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/custom_primary_button.dart';
+import '../../../core/utils/app_assets.dart';
 import '../../dashboard/screens/main_scaffold.dart';
 import '../bloc/favorites_cubit.dart';
 import '../models/favorite_item.dart';
@@ -50,30 +52,12 @@ class FavoritesScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 32),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                // Navigate back to Home Tab
-                context.findAncestorStateOfType<MainScaffoldState>()?.switchTab(0);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                padding: const EdgeInsets.symmetric(vertical: 18),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 0,
-              ),
-              child: Text(
-                l10n.browseCharities,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+          CustomPrimaryButton(
+            text: l10n.browseCharities,
+            onPressed: () {
+              // Navigate back to Home Tab
+              context.findAncestorStateOfType<MainScaffoldState>()?.switchTab(0);
+            },
           ),
         ],
       ),
@@ -119,7 +103,7 @@ class FavoritesScreen extends StatelessWidget {
                       'name': item.title,
                       'icon': Icons.favorite,
                       'color': item.imageColor,
-                      'imagePath': _getImagePathByTitle(item.title),
+                      'imagePath': AppAssets.getCampaignImage(item.title),
                     });
                   },
                   contentPadding: const EdgeInsets.all(12),
@@ -127,14 +111,14 @@ class FavoritesScreen extends StatelessWidget {
                     width: 50,
                     height: 50,
                     decoration: BoxDecoration(
-                      color: _getImagePathByTitle(item.title) != null ? Colors.white : item.imageColor,
+                      color: AppAssets.getCampaignImage(item.title) != null ? Colors.white : item.imageColor,
                       borderRadius: BorderRadius.circular(8),
-                      border: _getImagePathByTitle(item.title) != null ? Border.all(color: Colors.grey.shade200) : null,
+                      border: AppAssets.getCampaignImage(item.title) != null ? Border.all(color: Colors.grey.shade200) : null,
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
-                      child: _getImagePathByTitle(item.title) != null
-                          ? Image.asset(_getImagePathByTitle(item.title)!, fit: BoxFit.contain)
+                      child: AppAssets.getCampaignImage(item.title) != null
+                          ? Image.asset(AppAssets.getCampaignImage(item.title)!, fit: BoxFit.contain)
                           : Icon(Icons.volunteer_activism, color: AppColors.primary.withValues(alpha: 0.3)),
                     ),
                   ),
@@ -171,25 +155,4 @@ class FavoritesScreen extends StatelessWidget {
       ],
     );
   }
-}
-
-String? _getImagePathByTitle(String title) {
-  final Map<String, String> imageMap = {
-    // Organizations
-    'Misr El Kheir': 'assets/images/Misr El Kheir.png',
-    'Bayt Al Zakat and Al Sadaqat': 'assets/images/bait_al_zakat.png',
-    'Resala Charity Organization': 'assets/images/resala.png',
-    'Al Orman Association': 'assets/images/orman.png',
-    // Campaigns
-    'Medical Camp in Aswan': 'assets/images/aswan_medical_camp.png',
-    'School Supplies for Orphans': 'assets/images/orphan_school_bag.png',
-    'Emergency Flood Relief': 'assets/images/flood_relief.png',
-    'Clean Water for Rural Villages': 'assets/images/egypt_water_well.png',
-    'Ramadan Food Baskets': 'assets/images/ramadan_food_box.png',
-    'Sponsor an Orphan': 'assets/images/sponsor_orphan.png',
-    'Winter Clothes for the Poor': 'assets/images/winter_clothes.png',
-    'Care for People with Disabilities': 'assets/images/disabled_care.png',
-    'Support for the Elderly': 'assets/images/elderly_support.png',
-  };
-  return imageMap[title];
 }

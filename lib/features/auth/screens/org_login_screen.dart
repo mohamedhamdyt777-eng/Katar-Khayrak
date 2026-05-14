@@ -6,6 +6,9 @@ import 'package:reactive_forms/reactive_forms.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/theme/app_input_styles.dart';
+import '../../../core/widgets/custom_primary_button.dart';
+import '../../../core/utils/app_snackbars.dart';
 import '../bloc/auth_cubit.dart';
 import '../bloc/auth_state.dart';
 
@@ -43,7 +46,7 @@ class _OrgLoginScreenState extends State<OrgLoginScreen> {
           listener: (context, state) {
             state.maybeWhen(
               authenticated: (_) => context.go('/org-dashboard'),
-              error: (msg) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg))),
+              error: (msg) => AppSnackBars.showError(context, msg),
               orElse: () {},
             );
           },
@@ -79,25 +82,10 @@ class _OrgLoginScreenState extends State<OrgLoginScreen> {
                       // Email Field
                       ReactiveTextField(
                         formControlName: 'email',
-                        decoration: InputDecoration(
-                          hintText: l10n.orgEmailHint,
-                          hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
-                          prefixIcon: Icon(Icons.business, color: Colors.grey.shade400),
-                          filled: true,
-                          fillColor: Theme.of(context).cardColor,
-                          contentPadding: const EdgeInsets.symmetric(vertical: 18),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(color: Colors.grey.shade200),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(color: Colors.grey.shade200),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(color: AppColors.primary),
-                          ),
+                        decoration: AppInputStyles.defaultDecoration(
+                          context: context,
+                          hint: l10n.orgEmailHint,
+                          prefixIcon: Icons.business,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -106,10 +94,10 @@ class _OrgLoginScreenState extends State<OrgLoginScreen> {
                       ReactiveTextField(
                         formControlName: 'password',
                         obscureText: _obscurePassword,
-                        decoration: InputDecoration(
-                          hintText: l10n.enterYourPassword,
-                          hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
-                          prefixIcon: Icon(Icons.lock_outline, color: Colors.grey.shade400),
+                        decoration: AppInputStyles.defaultDecoration(
+                          context: context,
+                          hint: l10n.enterYourPassword,
+                          prefixIcon: Icons.lock_outline,
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
@@ -120,21 +108,6 @@ class _OrgLoginScreenState extends State<OrgLoginScreen> {
                                 _obscurePassword = !_obscurePassword;
                               });
                             },
-                          ),
-                          filled: true,
-                          fillColor: Theme.of(context).cardColor,
-                          contentPadding: const EdgeInsets.symmetric(vertical: 18),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(color: Colors.grey.shade200),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: BorderSide(color: Colors.grey.shade200),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(16),
-                            borderSide: const BorderSide(color: AppColors.primary),
                           ),
                         ),
                       ),
@@ -157,7 +130,8 @@ class _OrgLoginScreenState extends State<OrgLoginScreen> {
                       const SizedBox(height: 20),
                       
                       // Login Button
-                      ElevatedButton(
+                      CustomPrimaryButton(
+                        text: l10n.loginTitle,
                         onPressed: form.valid
                             ? () {
                                 context.read<AuthCubit>().login(
@@ -166,25 +140,7 @@ class _OrgLoginScreenState extends State<OrgLoginScreen> {
                                 );
                               }
                             : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          elevation: 0,
-                        ),
-                        child: state.maybeWhen(
-                          loading: () => const SizedBox(
-                            height: 24,
-                            width: 24,
-                            child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                          ),
-                          orElse: () => Text(
-                            l10n.loginTitle,
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                        ),
+                        isLoading: state.maybeWhen(loading: () => true, orElse: () => false),
                       ),
                       const SizedBox(height: 24),
                       

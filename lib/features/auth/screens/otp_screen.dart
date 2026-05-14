@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 import '../../../core/l10n/app_localizations.dart';
+import '../../../core/widgets/custom_primary_button.dart';
 
 class OtpScreen extends StatelessWidget {
   final String phone;
@@ -37,14 +38,14 @@ class OtpScreen extends StatelessWidget {
                   decoration: const InputDecoration(labelText: 'Enter OTP'),
                 ),
                 const SizedBox(height: 32),
-                ElevatedButton(
+                CustomPrimaryButton(
+                  text: 'Verify & Continue',
                   onPressed: form.valid
                       ? () {
                           // Mock successful OTP & bypass to dashboard
                           context.go('/dashboard');
                         }
                       : null,
-                  child: const Text('Verify & Continue'),
                 ),
               ],
             ),

@@ -7,6 +7,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/theme/app_input_styles.dart';
+import '../../../core/widgets/custom_primary_button.dart';
+import '../../../core/utils/app_snackbars.dart';
 import '../bloc/auth_cubit.dart';
 import '../bloc/auth_state.dart';
 
@@ -61,9 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   context.go('/dashboard');
                 }
               },
-              error: (msg) => ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(msg))),
+              error: (msg) => AppSnackBars.showError(context, msg),
               orElse: () {},
             );
           },
@@ -105,9 +106,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // Name Field
                       ReactiveTextField(
                         formControlName: 'name',
-                        decoration: _inputDecoration(
-                          l10n.enterYourName,
-                          widget.isOrg ? Icons.business : Icons.person_outline,
+                        decoration: AppInputStyles.defaultDecoration(
+                          context: context,
+                          hint: l10n.enterYourName,
+                          prefixIcon: widget.isOrg ? Icons.business : Icons.person_outline,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -115,9 +117,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // Email Field
                       ReactiveTextField(
                         formControlName: 'email',
-                        decoration: _inputDecoration(
-                          l10n.enterYourEmail,
-                          Icons.mail_outline,
+                        decoration: AppInputStyles.defaultDecoration(
+                          context: context,
+                          hint: l10n.enterYourEmail,
+                          prefixIcon: Icons.mail_outline,
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -126,23 +129,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ReactiveTextField(
                         formControlName: 'password',
                         obscureText: _obscurePassword,
-                        decoration:
-                            _inputDecoration(
-                              l10n.enterYourPassword,
-                              Icons.lock_outline,
-                            ).copyWith(
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword
-                                      ? Icons.visibility_off_outlined
-                                      : Icons.visibility_outlined,
-                                  color: Colors.grey.shade400,
-                                ),
-                                onPressed: () => setState(
-                                  () => _obscurePassword = !_obscurePassword,
-                                ),
-                              ),
+                        decoration: AppInputStyles.defaultDecoration(
+                          context: context,
+                          hint: l10n.enterYourPassword,
+                          prefixIcon: Icons.lock_outline,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
+                              color: Colors.grey.shade400,
                             ),
+                            onPressed: () => setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            ),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 16),
 
@@ -150,29 +152,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ReactiveTextField(
                         formControlName: 'confirmPassword',
                         obscureText: _obscureConfirmPassword,
-                        decoration:
-                            _inputDecoration(
-                              l10n.confirmYourPassword,
-                              Icons.lock_outline,
-                            ).copyWith(
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscureConfirmPassword
-                                      ? Icons.visibility_off_outlined
-                                      : Icons.visibility_outlined,
-                                  color: Colors.grey.shade400,
-                                ),
-                                onPressed: () => setState(
-                                  () => _obscureConfirmPassword =
-                                      !_obscureConfirmPassword,
-                                ),
-                              ),
+                        decoration: AppInputStyles.defaultDecoration(
+                          context: context,
+                          hint: l10n.confirmYourPassword,
+                          prefixIcon: Icons.lock_outline,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureConfirmPassword
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
+                              color: Colors.grey.shade400,
                             ),
+                            onPressed: () => setState(
+                              () => _obscureConfirmPassword =
+                                  !_obscureConfirmPassword,
+                            ),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 32),
 
                       // Register Button
-                      ElevatedButton(
+                      CustomPrimaryButton(
+                        text: l10n.signup,
                         onPressed: form.valid
                             ? () {
                                 context.read<AuthCubit>().register(
@@ -182,32 +184,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 );
                               }
                             : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 18),
-                          elevation: 0,
-                        ),
-                        child: state.maybeWhen(
-                          loading: () => const SizedBox(
-                            height: 24,
-                            width: 24,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
-                          ),
-                          orElse: () => Text(
-                            l10n.signup,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
+                        isLoading: state.maybeWhen(loading: () => true, orElse: () => false),
                       ),
                       const SizedBox(height: 24),
 
@@ -256,11 +233,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // Google Sign Up Button
                       OutlinedButton.icon(
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Google Sign up clicked'),
-                            ),
-                          );
+                          AppSnackBars.show(context, 'Google Sign up clicked');
                         },
                         icon: SvgPicture.string(
                           _googleSvg,
@@ -292,29 +265,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             );
           },
         ),
-      ),
-    );
-  }
-
-  InputDecoration _inputDecoration(String hint, IconData icon) {
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
-      prefixIcon: Icon(icon, color: Colors.grey.shade400),
-      filled: true,
-      fillColor: Theme.of(context).cardColor,
-      contentPadding: const EdgeInsets.symmetric(vertical: 18),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: Colors.grey.shade200),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: Colors.grey.shade200),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
       ),
     );
   }

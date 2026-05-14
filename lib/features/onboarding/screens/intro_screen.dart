@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/custom_primary_button.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
@@ -177,27 +178,9 @@ class _IntroScreenState extends State<IntroScreen> {
                   const SizedBox(height: 32),
                   
                   // Next / Get Started Button
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _onNextPressed,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        padding: const EdgeInsets.symmetric(vertical: 18),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: Text(
-                        _currentIndex == 2 ? l10n.introGetStarted : l10n.introNext,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                  CustomPrimaryButton(
+                    text: _currentIndex == 2 ? l10n.introGetStarted : l10n.introNext,
+                    onPressed: _onNextPressed,
                   ),
                 ],
               ),

@@ -8,6 +8,8 @@ import 'package:intl/intl.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/custom_primary_button.dart';
+import '../../../core/utils/app_snackbars.dart';
 import '../bloc/campaigns_cubit.dart';
 
 class AddCampaignScreen extends StatefulWidget {
@@ -161,35 +163,17 @@ class _AddCampaignScreenState extends State<AddCampaignScreen> {
               else
                 Container(height: 100, alignment: Alignment.center, decoration: BoxDecoration(color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(16), border: Border.all(color: Colors.grey.shade200)), child: Text('No additional photos added', style: TextStyle(color: Colors.grey.shade500))),
               const SizedBox(height: 48),
-              ElevatedButton(
+              CustomPrimaryButton(
+                text: l10n.createCampaignBtn,
                 onPressed: () {
                   if (_titleController.text.isNotEmpty && formattedDateTime != l10n.timeNotSet) {
                     context.read<CampaignsCubit>().addCampaign(_titleController.text, formattedDateTime, AppColors.primary.withValues(alpha: 0.2), description: _descriptionController.text, targetAmount: double.tryParse(_amountController.text), coverImagePath: _coverImage?.path, galleryImagePaths: _galleryImages.map((e) => e.path).toList(), categoryIndex: _selectedCategoryIndex);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const Row(
-                          children: [
-                            Icon(Icons.check_circle, color: Colors.white),
-                            SizedBox(width: 12),
-                            Text(
-                              'Campaign added successfully!',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                        backgroundColor: AppColors.primary,
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        duration: const Duration(seconds: 3),
-                      ),
-                    );
+                    AppSnackBars.showSuccess(context, 'Campaign added successfully!');
                     context.pop();
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill out the title and date')));
+                    AppSnackBars.showError(context, 'Please fill out the title and date');
                   }
                 },
-                style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, padding: const EdgeInsets.symmetric(vertical: 18), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)), elevation: 0),
-                child: Text(l10n.createCampaignBtn, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
               ),
               const SizedBox(height: 24),
             ],

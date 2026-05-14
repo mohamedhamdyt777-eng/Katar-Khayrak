@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/custom_primary_button.dart';
+import '../../../core/utils/app_snackbars.dart';
 import '../bloc/campaigns_cubit.dart';
 
 class AddCampaignBottomSheet extends StatefulWidget {
@@ -97,7 +99,8 @@ class _AddCampaignBottomSheetState extends State<AddCampaignBottomSheet> {
           ),
           const SizedBox(height: 32),
 
-          ElevatedButton(
+          CustomPrimaryButton(
+            text: l10n.createCampaignBtn,
             onPressed: () {
               if (_titleController.text.isNotEmpty && _dateController.text.isNotEmpty) {
                 context.read<CampaignsCubit>().addCampaign(
@@ -105,42 +108,10 @@ class _AddCampaignBottomSheetState extends State<AddCampaignBottomSheet> {
                   _dateController.text,
                   AppColors.primary.withValues(alpha: 0.2),
                 );
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Row(
-                      children: [
-                        Icon(Icons.check_circle, color: Colors.white),
-                        SizedBox(width: 12),
-                        Text(
-                          'Campaign added successfully!',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    backgroundColor: AppColors.primary,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    duration: const Duration(seconds: 3),
-                  ),
-                );
+                AppSnackBars.showSuccess(context, 'Campaign added successfully!');
                 context.pop();
               }
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              padding: const EdgeInsets.symmetric(vertical: 18),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-            child: Text(
-              l10n.createCampaignBtn,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
           ),
           const SizedBox(height: 16),
         ],

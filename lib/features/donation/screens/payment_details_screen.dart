@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/custom_primary_button.dart';
 import '../../campaign/models/campaign.dart';
 import '../../notifications/bloc/notifications_cubit.dart';
 
@@ -219,7 +220,8 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
               const SizedBox(height: 40),
               
               // Confirm Button
-              ElevatedButton(
+              CustomPrimaryButton(
+                text: '${l10n.confirmDonation} - ${_selectedAmount > 0 ? _selectedAmount : 0} ${l10n.currencyEGP}',
                 onPressed: _selectedAmount > 0 ? () {
                   // Capture before dialog opens — dialog has a different context
                   final notifCubit = context.read<NotificationsCubit>();
@@ -274,23 +276,6 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                     ),
                   );
                 } : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  disabledBackgroundColor: Colors.grey.shade300,
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  '${l10n.confirmDonation} - ${_selectedAmount > 0 ? _selectedAmount : 0} ${l10n.currencyEGP}',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
               ),
               const SizedBox(height: 20),
             ],
