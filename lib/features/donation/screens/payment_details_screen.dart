@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../campaign/models/campaign.dart';
+import '../../notifications/bloc/notifications_cubit.dart';
 
 class PaymentDetailsScreen extends StatefulWidget {
   final Campaign campaign;
@@ -219,10 +221,16 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
               // Confirm Button
               ElevatedButton(
                 onPressed: _selectedAmount > 0 ? () {
+                  // Capture before dialog opens — dialog has a different context
+                  final notifCubit = context.read<NotificationsCubit>();
+                  final amount = _selectedAmount;
+                  final campaignTitle = widget.campaign.title;
+
                   // Simulate payment success
                   showDialog(
                     context: context,
-                    builder: (context) => AlertDialog(
+                    barrierDismissible: false,
+                    builder: (dialogContext) => AlertDialog(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                       title: const Icon(Icons.check_circle, color: Colors.green, size: 64),
                       content: Column(
@@ -234,7 +242,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'Your donation of $_selectedAmount ${l10n.currencyEGP} has been received successfully.',
+                            'Your donation of $amount ${l10n.currencyEGP} has been received successfully.',
                             textAlign: TextAlign.center,
                             style: const TextStyle(color: Colors.grey),
                           ),
@@ -245,8 +253,14 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: () {
-                              context.pop(); // Close dialog
-                              context.pop(); // Go back to details screen
+                              // Fire notification using the pre-captured cubit
+                              notifCubit.addNotification(
+                                title: 'Payment Successful',
+                                body:
+                                    'Thank you for your generous donation of $amount EGP to $campaignTitle. Your support makes a difference!',
+                              );
+                              Navigator.of(dialogContext).pop(); // close dialog
+                              Navigator.of(context).pop();       // go back to campaign details
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,

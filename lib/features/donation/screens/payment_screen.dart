@@ -50,6 +50,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
     final orgName = widget.organization['name'] as String;
     final orgIcon = widget.organization['icon'] as IconData;
     final orgColor = widget.organization['color'] as Color;
+    final orgImage = widget.organization['imagePath'] as String?;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -95,10 +96,20 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       width: 70,
                       height: 70,
                       decoration: BoxDecoration(
-                        color: orgColor.withValues(alpha: 0.1),
+                        color: orgImage != null ? Colors.white : orgColor.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
+                        border: orgImage != null ? Border.all(color: Colors.grey.shade200) : null,
                       ),
-                      child: Icon(orgIcon, color: orgColor, size: 36),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(35),
+                        child: orgImage != null
+                            ? Image.asset(
+                                orgImage,
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) => Icon(orgIcon, color: orgColor, size: 36),
+                              )
+                            : Icon(orgIcon, color: orgColor, size: 36),
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -232,7 +243,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     body: 'Thank you for your generous donation of $_selectedAmount EGP to $orgName. Your support makes a difference!',
                   );
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Payment Successful! Thank you.')),
+                    SnackBar(
+                      content: const Row(
+                        children: [
+                          Icon(Icons.check_circle, color: Colors.white),
+                          SizedBox(width: 12),
+                          Text(
+                            'Payment Successful! Thank you.',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      backgroundColor: AppColors.primary,
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      duration: const Duration(seconds: 3),
+                    ),
                   );
                   context.pop();
                 } : null,

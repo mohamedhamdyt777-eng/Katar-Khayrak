@@ -53,16 +53,41 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const SizedBox(height: 20),
-                      // Logo
-                      Center(
-                        child: Text(
-                          l10n.appName.toUpperCase(),
-                          style: AppTextStyles.headlineLarge.copyWith(
-                            color: AppColors.primary,
-                            letterSpacing: 1.5,
-                            fontWeight: FontWeight.w900,
+                      // Back Button & Logo
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).cardColor,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: Colors.grey.shade200),
+                              ),
+                              child: IconButton(
+                                icon: const Icon(Icons.arrow_back_ios_new, size: 18),
+                                onPressed: () {
+                                  if (context.canPop()) {
+                                    context.pop();
+                                  } else {
+                                    context.go('/');
+                                  }
+                                },
+                              ),
+                            ),
                           ),
-                        ),
+                          Center(
+                            child: Text(
+                              l10n.appName.toUpperCase(),
+                              style: AppTextStyles.headlineLarge.copyWith(
+                                color: AppColors.primary,
+                                letterSpacing: 1.5,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 50),
                       // Heading

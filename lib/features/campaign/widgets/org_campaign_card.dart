@@ -13,11 +13,26 @@ class OrgCampaignCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 8,
-      shadowColor: Theme.of(context).shadowColor.withValues(alpha: 0.05),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      margin: EdgeInsets.zero,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? const Color(0xFF1E2235) : Colors.white;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: BorderRadius.circular(24),
+        border: isDark
+            ? Border.all(color: Colors.white.withValues(alpha: 0.06))
+            : null,
+        boxShadow: [
+          BoxShadow(
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.35)
+                : Colors.black.withValues(alpha: 0.06),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
@@ -38,14 +53,33 @@ class OrgCampaignCard extends StatelessWidget {
                 child: Hero(
                   tag: 'campaign_image_${campaign.id}',
                   child: Container(
-                    decoration: BoxDecoration(color: campaign.imageColor),
-                    child: Center(
-                      child: Icon(
-                        Icons.volunteer_activism,
-                        size: 64,
-                        color: AppColors.primary.withValues(alpha: 0.3),
-                      ),
+                    decoration: BoxDecoration(
+                      color: campaign.coverImagePath != null ? Colors.transparent : campaign.imageColor,
                     ),
+                    child: campaign.coverImagePath != null
+                        ? Image.asset(
+                            campaign.coverImagePath!,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: double.infinity,
+                            errorBuilder: (context, error, stackTrace) => Container(
+                              color: campaign.imageColor,
+                              child: Center(
+                                child: Icon(
+                                  Icons.volunteer_activism,
+                                  size: 64,
+                                  color: AppColors.primary.withValues(alpha: 0.3),
+                                ),
+                              ),
+                            ),
+                          )
+                        : Center(
+                            child: Icon(
+                              Icons.volunteer_activism,
+                              size: 64,
+                              color: AppColors.primary.withValues(alpha: 0.3),
+                            ),
+                          ),
                   ),
                 ),
               ),
@@ -56,7 +90,7 @@ class OrgCampaignCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
+                    color: cardBg,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -75,7 +109,8 @@ class OrgCampaignCard extends StatelessWidget {
                 left: 0,
                 right: 0,
                 height: 60,
-                child: Padding(
+                child: Container(
+                  decoration: BoxDecoration(color: cardBg),
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
                     children: [

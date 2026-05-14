@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
@@ -118,6 +119,7 @@ class FavoritesScreen extends StatelessWidget {
                       'name': item.title,
                       'icon': Icons.favorite,
                       'color': item.imageColor,
+                      'imagePath': _getImagePathByTitle(item.title),
                     });
                   },
                   contentPadding: const EdgeInsets.all(12),
@@ -125,10 +127,16 @@ class FavoritesScreen extends StatelessWidget {
                     width: 50,
                     height: 50,
                     decoration: BoxDecoration(
-                      color: item.imageColor,
+                      color: _getImagePathByTitle(item.title) != null ? Colors.white : item.imageColor,
                       borderRadius: BorderRadius.circular(8),
+                      border: _getImagePathByTitle(item.title) != null ? Border.all(color: Colors.grey.shade200) : null,
                     ),
-                    child: Icon(Icons.volunteer_activism, color: AppColors.primary.withValues(alpha: 0.3)),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: _getImagePathByTitle(item.title) != null
+                          ? Image.asset(_getImagePathByTitle(item.title)!, fit: BoxFit.contain)
+                          : Icon(Icons.volunteer_activism, color: AppColors.primary.withValues(alpha: 0.3)),
+                    ),
                   ),
                   title: Text(
                     item.title,
@@ -138,7 +146,21 @@ class FavoritesScreen extends StatelessWidget {
                   trailing: IconButton(
                     icon: const Icon(Icons.favorite, color: AppColors.primary),
                     onPressed: () {
-                      context.read<FavoritesCubit>().removeItem(item);
+                      final favCubit = context.read<FavoritesCubit>();
+                      AwesomeDialog(
+                        context: context,
+                        dialogType: DialogType.question,
+                        animType: AnimType.scale,
+                        title: 'Remove Favorite',
+                        desc: 'Remove "${item.title}" from your favorites?',
+                        btnCancelText: 'Keep',
+                        btnOkText: 'Remove',
+                        btnOkColor: AppColors.primary,
+                        btnCancelOnPress: () {},
+                        btnOkOnPress: () {
+                          favCubit.removeItem(item);
+                        },
+                      ).show();
                     },
                   ),
                 ),
@@ -149,4 +171,25 @@ class FavoritesScreen extends StatelessWidget {
       ],
     );
   }
+}
+
+String? _getImagePathByTitle(String title) {
+  final Map<String, String> imageMap = {
+    // Organizations
+    'Misr El Kheir': 'assets/images/Misr El Kheir.png',
+    'Bayt Al Zakat and Al Sadaqat': 'assets/images/bait_al_zakat.png',
+    'Resala Charity Organization': 'assets/images/resala.png',
+    'Al Orman Association': 'assets/images/orman.png',
+    // Campaigns
+    'Medical Camp in Aswan': 'assets/images/aswan_medical_camp.png',
+    'School Supplies for Orphans': 'assets/images/orphan_school_bag.png',
+    'Emergency Flood Relief': 'assets/images/flood_relief.png',
+    'Clean Water for Rural Villages': 'assets/images/egypt_water_well.png',
+    'Ramadan Food Baskets': 'assets/images/ramadan_food_box.png',
+    'Sponsor an Orphan': 'assets/images/sponsor_orphan.png',
+    'Winter Clothes for the Poor': 'assets/images/winter_clothes.png',
+    'Care for People with Disabilities': 'assets/images/disabled_care.png',
+    'Support for the Elderly': 'assets/images/elderly_support.png',
+  };
+  return imageMap[title];
 }

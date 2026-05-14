@@ -8,7 +8,7 @@ class DonateBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.topCenter,
@@ -34,15 +34,14 @@ class DonateBottomSheet extends StatelessWidget {
               const SizedBox(height: 12),
               Text(
                 l10n.tellUsDonationAmount,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey.shade600,
-                ),
+                style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
               ),
               const SizedBox(height: 40),
               TextField(
                 keyboardType: TextInputType.number,
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                ),
                 decoration: InputDecoration(
                   hintText: l10n.enterDonationAmount,
                   hintStyle: TextStyle(color: Colors.grey.shade500),
@@ -66,7 +65,10 @@ class DonateBottomSheet extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     borderSide: const BorderSide(color: AppColors.primary),
                   ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 20,
+                  ),
                 ),
               ),
               const SizedBox(height: 32),
@@ -76,7 +78,22 @@ class DonateBottomSheet extends StatelessWidget {
                   onPressed: () {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(l10n.donateNow)),
+                      SnackBar(
+                        content: const Row(
+                          children: [
+                            Icon(Icons.check_circle, color: Colors.white),
+                            SizedBox(width: 12),
+                            Text(
+                              'Payment Successful! Thank you.',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        backgroundColor: AppColors.primary,
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        duration: const Duration(seconds: 3),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -108,11 +125,7 @@ class DonateBottomSheet extends StatelessWidget {
               color: AppColors.primary,
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.eco,
-              color: Colors.white,
-              size: 36,
-            ),
+            child: const Icon(Icons.eco, color: Colors.white, size: 36),
           ),
         ),
       ],

@@ -267,7 +267,10 @@ class _EditCampaignScreenState extends State<EditCampaignScreen> {
                 hintText: l10n.enterTargetAmount,
                 context: context,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                prefixIcon: const Icon(Icons.attach_money, color: Colors.grey),
+                prefixIcon: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                  child: Text('EGP', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 13)),
+                ),
               ),
               const SizedBox(height: 24),
 
@@ -518,7 +521,22 @@ class _EditCampaignScreenState extends State<EditCampaignScreen> {
                     context.read<CampaignsCubit>().updateCampaign(updatedCampaign);
                     
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Campaign updated successfully!')),
+                      SnackBar(
+                        content: const Row(
+                          children: [
+                            Icon(Icons.check_circle, color: Colors.white),
+                            SizedBox(width: 12),
+                            Text(
+                              'Campaign updated successfully!',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        backgroundColor: AppColors.primary,
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        duration: const Duration(seconds: 3),
+                      ),
                     );
                     
                     // We need to pop back. Wait, the details screen doesn't automatically
@@ -585,6 +603,7 @@ class _EditCampaignScreenState extends State<EditCampaignScreen> {
       controller: controller,
       maxLines: maxLines,
       keyboardType: keyboardType,
+      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
       decoration: InputDecoration(
         hintText: hintText,
         prefixIcon: prefixIcon,

@@ -17,6 +17,7 @@ class CampaignsCubit extends Cubit<CampaignsState> {
       imageColor: Colors.teal.shade100,
       location: 'Aswan, Egypt',
       categoryIndex: 3, // Health
+      coverImagePath: 'assets/images/aswan_medical_camp.png',
       description:
           'Join us for our upcoming medical camp in Aswan. We will be providing free health checkups, medicine, and specialized consultations to over 500 residents in need. Your contribution helps us cover the cost of supplies and travel for our volunteer doctors.',
     ),
@@ -27,6 +28,7 @@ class CampaignsCubit extends Cubit<CampaignsState> {
       imageColor: Colors.blue.shade100,
       location: 'Cairo, Egypt',
       categoryIndex: 4, // Education
+      coverImagePath: 'assets/images/orphan_school_bag.png',
       description:
           'Help us equip 200 orphaned children with the essential school supplies they need for the new academic year. Backpacks, notebooks, and stationery will be distributed at the local community center.',
     ),
@@ -37,6 +39,7 @@ class CampaignsCubit extends Cubit<CampaignsState> {
       imageColor: Colors.orange.shade100,
       location: 'Alexandria, Egypt',
       categoryIndex: 6, // Disaster Relief
+      coverImagePath: 'assets/images/flood_relief.png',
       description:
           'Recent severe weather has displaced many families. We are collecting funds to provide emergency shelter, warm blankets, and hot meals. Act now to provide immediate assistance to those affected.',
     ),
@@ -48,6 +51,7 @@ class CampaignsCubit extends Cubit<CampaignsState> {
       location: 'Fayoum, Egypt',
       categoryIndex: 1, // Most Needed
       targetAmount: 50000,
+      coverImagePath: 'assets/images/egypt_water_well.png',
       description:
           'Access to clean drinking water is a fundamental human right. We are building 10 new water wells in remote villages in Fayoum to provide safe water for hundreds of families. This is currently our most urgent and needed campaign.',
     ),
@@ -59,6 +63,7 @@ class CampaignsCubit extends Cubit<CampaignsState> {
       location: 'Nationwide',
       categoryIndex: 2, // Most Donated
       targetAmount: 100000,
+      coverImagePath: 'assets/images/ramadan_food_box.png',
       description:
           'Our annual Ramadan Food Basket drive is our most popular community initiative. Each basket contains enough essential food items (rice, oil, lentils, dates) to sustain a family of 5 for an entire month.',
     ),
@@ -70,8 +75,44 @@ class CampaignsCubit extends Cubit<CampaignsState> {
       location: 'Giza, Egypt',
       categoryIndex: 5, // Orphans
       targetAmount: 30000,
+      coverImagePath: 'assets/images/sponsor_orphan.png',
       description:
           'Make a lasting impact by sponsoring a child. Your monthly or one-time donation covers living expenses, clothing, and access to extracurricular activities for orphans in our care facilities.',
+    ),
+    Campaign(
+      id: '7',
+      date: '15 Feb',
+      title: 'Winter Clothes for the Poor',
+      imageColor: Colors.indigo.shade100,
+      location: 'Cairo, Egypt',
+      categoryIndex: 1, // Most Needed
+      coverImagePath: 'assets/images/winter_clothes.png',
+      description:
+          'As temperatures drop, thousands of Egyptians face bitter cold without adequate clothing. Help us distribute warm jackets, blankets, and winter essentials to vulnerable families in the streets of Cairo.',
+    ),
+    Campaign(
+      id: '8',
+      date: '20 Feb',
+      title: 'Care for People with Disabilities',
+      imageColor: Colors.amber.shade100,
+      location: 'Alexandria, Egypt',
+      categoryIndex: 3, // Health
+      targetAmount: 40000,
+      coverImagePath: 'assets/images/disabled_care.png',
+      description:
+          'We fund physiotherapy sessions, assistive devices, and specialized care for children and adults living with disabilities across Egypt. Your support gives them mobility, independence, and hope.',
+    ),
+    Campaign(
+      id: '9',
+      date: '1 Mar',
+      title: 'Support for the Elderly',
+      imageColor: Colors.brown.shade100,
+      location: 'Nationwide',
+      categoryIndex: 2, // Most Donated
+      targetAmount: 20000,
+      coverImagePath: 'assets/images/elderly_support.png',
+      description:
+          'Thousands of elderly Egyptians spend their final years alone and forgotten. Our volunteers visit nursing homes and homes across Egypt to provide companionship, meals, and medical support to those who need it most.',
     ),
   ];
 

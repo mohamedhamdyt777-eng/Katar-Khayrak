@@ -109,7 +109,7 @@ class _AddCampaignScreenState extends State<AddCampaignScreen> {
               const SizedBox(height: 24),
               _buildSectionTitle(l10n.targetAmount, isDark),
               const SizedBox(height: 8),
-              _buildTextField(controller: _amountController, hintText: l10n.enterTargetAmount, context: context, keyboardType: const TextInputType.numberWithOptions(decimal: true), prefixIcon: const Icon(Icons.attach_money, color: Colors.grey)),
+              _buildTextField(controller: _amountController, hintText: l10n.enterTargetAmount, context: context, keyboardType: const TextInputType.numberWithOptions(decimal: true), prefixIcon: const Padding(padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14), child: Text('EGP', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 13)))),
               const SizedBox(height: 24),
               _buildSectionTitle('Category', isDark),
               const SizedBox(height: 8),
@@ -165,7 +165,24 @@ class _AddCampaignScreenState extends State<AddCampaignScreen> {
                 onPressed: () {
                   if (_titleController.text.isNotEmpty && formattedDateTime != l10n.timeNotSet) {
                     context.read<CampaignsCubit>().addCampaign(_titleController.text, formattedDateTime, AppColors.primary.withValues(alpha: 0.2), description: _descriptionController.text, targetAmount: double.tryParse(_amountController.text), coverImagePath: _coverImage?.path, galleryImagePaths: _galleryImages.map((e) => e.path).toList(), categoryIndex: _selectedCategoryIndex);
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Campaign added successfully!')));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Row(
+                          children: [
+                            Icon(Icons.check_circle, color: Colors.white),
+                            SizedBox(width: 12),
+                            Text(
+                              'Campaign added successfully!',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        backgroundColor: AppColors.primary,
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
                     context.pop();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please fill out the title and date')));
@@ -199,6 +216,7 @@ class _AddCampaignScreenState extends State<AddCampaignScreen> {
   Widget _buildTextField({required TextEditingController controller, required String hintText, required BuildContext context, int maxLines = 1, TextInputType? keyboardType, Widget? prefixIcon}) {
     return TextField(
       controller: controller, maxLines: maxLines, keyboardType: keyboardType,
+      style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
       decoration: InputDecoration(hintText: hintText, prefixIcon: prefixIcon, filled: true, fillColor: Theme.of(context).cardColor,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.grey.shade200)),
         enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.grey.shade200)),

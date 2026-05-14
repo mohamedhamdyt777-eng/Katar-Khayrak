@@ -184,7 +184,10 @@ final GoRouter appRouter = GoRouter(
       path: '/payment-details',
       builder: (context, state) {
         final campaign = state.extra as Campaign;
-        return PaymentDetailsScreen(campaign: campaign);
+        return BlocProvider.value(
+          value: getIt<NotificationsCubit>(),
+          child: PaymentDetailsScreen(campaign: campaign),
+        );
       },
     ),
   ],

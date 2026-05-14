@@ -50,9 +50,11 @@ class CampaignDetailsScreen extends StatelessWidget {
               background: Hero(
                 tag: 'campaign_image_${campaign.id}',
                 child: Container(
-                  color: campaign.imageColor,
+                  color: campaign.coverImagePath != null ? Colors.transparent : campaign.imageColor,
                   child: campaign.coverImagePath != null
-                      ? Image.file(File(campaign.coverImagePath!), fit: BoxFit.cover)
+                      ? (campaign.coverImagePath!.startsWith('assets/')
+                          ? Image.asset(campaign.coverImagePath!, fit: BoxFit.cover)
+                          : Image.file(File(campaign.coverImagePath!), fit: BoxFit.cover))
                       : Center(
                           child: Icon(
                             Icons.volunteer_activism,
@@ -151,7 +153,7 @@ class CampaignDetailsScreen extends StatelessWidget {
                                 style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                '\$${campaign.targetAmount!.toStringAsFixed(2)}',
+                                '${campaign.targetAmount!.toStringAsFixed(0)} EGP',
                                 style: AppTextStyles.titleLarge.copyWith(
                                   fontWeight: FontWeight.w900,
                                   color: Theme.of(context).colorScheme.onSurface,
@@ -276,7 +278,22 @@ class CampaignDetailsScreen extends StatelessWidget {
                           final item = CartItem(title: campaign.title, imageColor: campaign.imageColor);
                           context.read<CartCubit>().addItem(item);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(l10n.addedToCartMsg)),
+                            SnackBar(
+                              content: Row(
+                                children: [
+                                  const Icon(Icons.check_circle, color: Colors.white),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    l10n.addedToCartMsg,
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                              backgroundColor: AppColors.primary,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              duration: const Duration(seconds: 2),
+                            ),
                           );
                         },
                         style: OutlinedButton.styleFrom(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -28,12 +29,16 @@ class _IntroScreenState extends State<IntroScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      if (mounted) context.go('/user-type');
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('hasSeenDonorIntro', true);
+      if (mounted) context.go('/login');
     }
   }
 
   void _onSkipPressed() async {
-    if (mounted) context.go('/user-type');
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('hasSeenDonorIntro', true);
+    if (mounted) context.go('/login');
   }
 
   @override

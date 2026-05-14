@@ -20,21 +20,25 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
       'name': 'Misr El Kheir',
       'icon': Icons.volunteer_activism,
       'color': Colors.purple,
+      'imagePath': 'assets/images/Misr El Kheir.png',
     },
     {
       'name': 'Bayt Al Zakat and Al Sadaqat',
       'icon': Icons.account_balance,
       'color': Colors.blue,
+      'imagePath': 'assets/images/bait_al_zakat.png',
     },
     {
       'name': 'Resala Charity Organization',
       'icon': Icons.favorite,
       'color': Colors.indigo,
+      'imagePath': 'assets/images/resala.png',
     },
     {
       'name': 'Al Orman Association',
       'icon': Icons.health_and_safety,
       'color': Colors.teal,
+      'imagePath': 'assets/images/orman.png',
     },
   ];
 
@@ -159,13 +163,27 @@ class _OrganizationsScreenState extends State<OrganizationsScreen> {
                       width: 50,
                       height: 50,
                       decoration: BoxDecoration(
-                        color: (org['color'] as Color).withValues(alpha: 0.1),
+                        color: org['imagePath'] != null ? Colors.white : (org['color'] as Color).withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
+                        border: org['imagePath'] != null ? Border.all(color: Colors.grey.shade200) : null,
                       ),
-                      child: Icon(
-                        org['icon'] as IconData,
-                        color: org['color'] as Color,
-                        size: 28,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: org['imagePath'] != null
+                            ? Image.asset(
+                                org['imagePath'] as String,
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) => Icon(
+                                  org['icon'] as IconData,
+                                  color: org['color'] as Color,
+                                  size: 28,
+                                ),
+                              )
+                            : Icon(
+                                org['icon'] as IconData,
+                                color: org['color'] as Color,
+                                size: 28,
+                              ),
                       ),
                     ),
                     title: Text(
